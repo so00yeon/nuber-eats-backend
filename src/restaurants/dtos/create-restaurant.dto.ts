@@ -5,7 +5,7 @@ import { IsBoolean, IsString, Length } from 'class-validator';
 export class CreateRestaurantDto {
   @Field((type) => String)
   @IsString()
-  @Length(5, 10) // 최소, 최대 길이를 정한다.
+  @Length(5, 10)
   name: string;
 
   @Field((type) => Boolean)
