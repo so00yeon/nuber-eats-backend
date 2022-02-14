@@ -6,14 +6,16 @@ import { CreateAccountInput } from './dtos/create-account.dto';
 import { User } from './entities/user.entity';
 import { LoginInput } from './entities/login.dto';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from 'src/jwt/jwt.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly users: Repository<User>,
     private readonly config: ConfigService,
+    private readonly jwtService: JwtService,
   ) {
-    //console.log(this.config.get('SECRET_KEY')); 토큰 확인
+    this.jwtService.hello(); // 확인
   }
 
   async createAccount({
