@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import * as jwt from 'jsonwebtoken';
 import { CreateAccountInput } from './dtos/create-account.dto';
 import { User } from './entities/user.entity';
-import { LoginInput } from './entities/login.dto';
+import { LoginInput } from './dtos/login.dto';
 import { JwtService } from 'src/jwt/jwt.service';
 
 @Injectable()
