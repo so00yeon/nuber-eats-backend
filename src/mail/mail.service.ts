@@ -16,7 +16,10 @@ export class MailService {
     emailVars: EmailVar[],
   ) {
     const form = new FormData();
-    form.append('from', `Excited User <mailgun@${this.options.domain}>`);
+    form.append(
+      'from',
+      `Soso from Nuber Eats <mailgun@${this.options.domain}>`,
+    );
     form.append('to', `hazels201@gmail.com`);
     form.append('subject', subject);
     form.append('template', template);
@@ -37,7 +40,7 @@ export class MailService {
   }
 
   sendVerificationEmail(email: string, code: string) {
-    this.sendEmail('Verify Your Email', 'vetify-email', [
+    this.sendEmail('Verify Your Email', 'verify-email', [
       { key: 'code', value: code },
       { key: 'username', value: email },
     ]);
