@@ -68,5 +68,19 @@ describe('MailService', () => {
       );
       expect(ok).toEqual(true);
     });
+
+    it('fails on error', async () => {
+      jest.spyOn(got, 'post').mockImplementation(() => {
+        throw new Error();
+      });
+      const ok = await service.sendEmail('', '', []);
+      expect(ok).toEqual(false);
+    });
+
+    it('forEach', async () => {
+      const ok = await service.sendEmail('', '', [{ key: '', value: '' }]);
+      const formSpy = jest.spyOn(FormData.prototype, 'append');
+      expect(formSpy).toHaveBeenCalledTimes(13);
+    });
   });
 });

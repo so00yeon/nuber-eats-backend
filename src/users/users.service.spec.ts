@@ -168,7 +168,6 @@ describe('UserService', () => {
       };
       usersRepository.findOne.mockResolvedValue(mockedUser);
       await service.login(loginArgs);
-      console.log();
       expect(jwtService.sign).toHaveBeenCalledTimes(1);
       expect(jwtService.sign).toHaveBeenLastCalledWith(expect.any(Number));
     });
