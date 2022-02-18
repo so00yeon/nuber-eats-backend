@@ -4,10 +4,17 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { getConnection } from 'typeorm';
 
-describe('AppController (e2e)', () => {
+jest.mock('got', () => {
+  return {
+    post: jest.fn(),
+  };
+});
+
+const GRAPHQL_ENDPOINT = '/graphql';
+
+describe('UserModule (e2e)', () => {
   let app: INestApplication;
 
-  // beforeAll로 바꾸기
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -17,17 +24,66 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  // 모든 테스트를 마치고 데이터베이스를 닫아줌
   afterAll(async () => {
     await getConnection().dropDatabase();
     app.close();
   });
 
-  // 테스트하기 좋게 순서 지정
-  it.todo('createAccount');
+  describe('createAccount', () => {
+    const EMAIL = 'soso@gmail.com';
+    it('should create account', () => {
+      return request(app.getHttpServer())
+        .post(GRAPHQL_ENDPOINT)
+        .send({
+          query: `
+          mutation{
+           createAccount(input:{
+             email:"${EMAIL}",
+             password:"12345",
+             role:Owner
+            }){
+              ok
+              error
+            }
+          }
+          `,
+        })
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.data.createAccount.ok).toBe(true);
+          expect(res.body.data.createAccount.error).toBe(null);
+        });
+    });
+
+    it('should fail if account already exists', () => {
+      return request(app.getHttpServer())
+        .post(GRAPHQL_ENDPOINT)
+        .send({
+          query: `
+            mutation{
+           createAccount(input:{
+             email:"${EMAIL}",
+             password:"12345",
+             role:Owner
+            }){
+              ok
+              error
+            }
+          }
+        `,
+        })
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.data.createAccount.ok).toBe(false);
+          expect(res.body.data.createAccount.error).toEqual(expect.any(String));
+          // expect(res.body.data.createAccount.error).toBe('There is a user with that email already'));
+        });
+    });
+  });
+
+  it.todo('login');
   it.todo('userProfile');
   it.todo('me');
-  it.todo('login');
   it.todo('verifyEmail');
   it.todo('editProfile');
 });
